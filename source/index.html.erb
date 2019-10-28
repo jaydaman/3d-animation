@@ -1,0 +1,89 @@
+---
+title: Welcome to Middleman
+---
+
+<div id="info">Description</div>
+
+<script src="colfax_medium_regular.typeface.json">
+
+</script>
+
+<script>
+  // This is camera
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+  var renderer = new THREE.WebGLRenderer();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.body.appendChild( renderer.domElement );
+
+  // var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+  // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+  // var cube = new THREE.Mesh( geometry, material );
+  // this.scene.add( cube );
+  //
+  // camera.position.z = 5;
+
+
+
+  // instantiate a loader
+  var loader = new THREE.SVGLoader();
+
+  // load a SVG resource
+loader.load(
+	// resource URL
+	'ua-logo.svg',
+	// called when the resource is loaded
+	function ( data ) {
+
+		var paths = data.paths;
+		var group = new THREE.Group();
+
+		for ( var i = 0; i < paths.length; i ++ ) {
+
+			var path = paths[ i ];
+
+			var material = new THREE.MeshBasicMaterial( {
+				color: path.color,
+				side: THREE.DoubleSide,
+				depthWrite: false
+			} );
+
+			var shapes = path.toShapes( true );
+
+			for ( var j = 0; j < shapes.length; j ++ ) {
+
+				var shape = shapes[ j ];
+				var geometry = new THREE.ShapeBufferGeometry( shape );
+				var mesh = new THREE.Mesh( geometry, material );
+				group.add( mesh );
+
+			}
+
+		}
+
+		scene.add( group );
+
+	},
+	// called when loading is in progresses
+	function ( xhr ) {
+
+		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+	},
+	// called when loading has errors
+	function ( error ) {
+
+		console.log( 'An error happened' );
+
+	}
+);
+
+
+  function animate() {
+	requestAnimationFrame( animate );
+	renderer.render( scene, camera );
+  }
+
+  animate();
+</script>
